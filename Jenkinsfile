@@ -1,5 +1,3 @@
-/* groovylint-disable NoDef, VariableTypeRequired */
-/* groovylint-disable-next-line CompileStatic */
 def gv
 
 pipeline {
@@ -12,7 +10,7 @@ pipeline {
         stage('init') {
             steps {
                 script {
-                    gv = load'script.groovy'
+                    gv = load "script.groovy"
                 }
             }
         }
@@ -31,13 +29,17 @@ pipeline {
                 }
             }
             steps {
-                gv.testApp()
+                script {
+                    gv.testApp()
+                }
             }
         }
 
         stage('deploy') {
             steps {
-                gv.deployApp()
+                script {
+                    gv.deployApp()
+                }
             }
         }
     }

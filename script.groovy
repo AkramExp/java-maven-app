@@ -1,5 +1,3 @@
-/* groovylint-disable CompileStatic, FactoryMethodName */
-/* groovylint-disable-next-line MethodReturnTypeRequired, NoDef */
 def buildApp() {
     echo 'building the application... '
 }
