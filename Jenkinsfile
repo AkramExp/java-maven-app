@@ -1,34 +1,53 @@
+def gv
+
 pipeline {
     agent any
     tools {
         maven 'Maven'
     }
     stages {
-        stage('test') {
+        stage('init') {
             steps {
-                echo "testing the application... "
+                script {
+                    gv = load "script.groovy"
+                }
+            }
+        }
+        stage('build jar') {
+            steps {
+                script {
+                    echo "building the application... "
+                    sh 'mvn package'
+                }
             }
         }
 
-        stage('build') {
-            when {
-                expression {
-                    BRANCH_NAME=='main'
+        stage('build image') {
+            steps {
+                script {
+                    echo "building the docker image"
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
+                        sh 'docker build -t akramexp/my-repo:jma-2.0 .'
+                        sh "docker login -u $USER -p $PWD"
+                        sh 'docker push akramexp/my-repo:jma-2.0'
+                    }
                 }
             }
+        }
+
+        stage('test') {
             steps {
-                echo "building the application... "
+                script {
+                    gv.testApp()
+                }
             }
         }
 
         stage('deploy') {
-            when {
-                expression {
-                    BRANCH_NAME=='main'
-                }
-            }
             steps {
-                echo "deploying the application... "
+                script {
+                    gv.deployApp()
+                }
             }
         }
     }
