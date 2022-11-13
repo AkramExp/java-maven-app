@@ -1,4 +1,7 @@
+/* groovylint-disable NoDef, VariableTypeRequired */
 /* groovylint-disable-next-line CompileStatic */
+def gv
+
 pipeline {
     agent any
     parameters {
@@ -6,27 +9,35 @@ pipeline {
         booleanParam(name: 'executeTest', defaultValue: true, description: '')
     }
     stages {
+        stage('init') {
+            steps {
+                script {
+                    gv = load'script.groovy'
+                }
+            }
+        }
         stage('build') {
             steps {
-                echo 'building  the application...'
+                script {
+                    gv.buildApp()
+                }
             }
         }
 
         stage('test') {
             when {
                 expression {
-                    executeTest
+                    params.executeTest
                 }
-              }
+            }
             steps {
-                echo 'testing the application...'
+                gv.testApp()
             }
         }
 
         stage('deploy') {
             steps {
-                echo 'deploying the application...'
-                echo "deploying version ${VERSION}"
+                gv.deployApp()
             }
         }
     }
