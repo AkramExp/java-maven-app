@@ -1,3 +1,5 @@
+#!/usr/bin/env groovy
+@Library('jenkins-shared-lib')
 def gv
 
 pipeline {
@@ -16,8 +18,7 @@ pipeline {
         stage('build jar') {
             steps {
                 script {
-                    echo "building the application... "
-                    sh 'mvn package'
+                    gv.buildJar()
                 }
             }
         }
@@ -25,12 +26,7 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    echo "building the docker image"
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'PWD', usernameVariable: 'USER')]) {
-                        sh 'docker build -t akramexp/my-repo:jma-2.0 .'
-                        sh "docker login -u $USER -p $PWD"
-                        sh 'docker push akramexp/my-repo:jma-2.0'
-                    }
+                    gv.buildImage()
                 }
             }
         }
