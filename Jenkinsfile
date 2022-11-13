@@ -2,9 +2,8 @@ def gv
 
 pipeline {
     agent any
-    parameters {
-        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
-        booleanParam(name: 'executeTest', defaultValue: true, description: '')
+    tools {
+        mvn Maven
     }
     stages {
         stage('init') {
@@ -14,10 +13,23 @@ pipeline {
                 }
             }
         }
-        stage('build') {
+        stage('build jar') {
             steps {
                 script {
-                    gv.buildApp()
+                    echo "building the application... "
+                    sh 'mvn package'
+                }
+            }
+        }
+
+        stage('build image') {
+            steps {
+                script {
+                    echo "building the docker image"
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'PWD', usernameVariable: 'USER')])
+                    sh 'docker build -t akramexp/my-repo:jma:2.0 .'
+                    sh "docker login -u $USER -p $PWD"
+                    sh 'docker push akramexp/my-repo:jma:2.0'
                 }
             }
         }
@@ -36,17 +48,9 @@ pipeline {
         }
 
         stage('deploy') {
-            input {
-                message "Select the server you want to deploy it to"
-                ok "Done"
-                parameters {
-                    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
-                }
-            }
             steps {
                 script {
                     gv.deployApp()
-                    echo "deploying to ${ENV} server"
                 }
             }
         }
