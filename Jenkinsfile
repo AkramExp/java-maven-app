@@ -5,10 +5,9 @@ pipeline {
     stages {
       
         stage("build") {
-    
             when {
               expression {
-                BRANCH_NAME=='dev'
+                  BRANCH_NAME=='dev'
               }
             }
             steps {
@@ -17,7 +16,11 @@ pipeline {
         }
       
       stage("test") {
-        
+          when {
+              expression {
+                  BRANCH_NAME=='jenkins-job'
+              }
+            }
             steps {
                echo "testing the application..."
             }
