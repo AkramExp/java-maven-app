@@ -36,9 +36,17 @@ pipeline {
         }
 
         stage('deploy') {
+            input {
+                message "Select the server you want to deploy it to"
+                ok "Done"
+                parameters {
+                    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
+                }
+            }
             steps {
                 script {
                     gv.deployApp()
+                    echo "deploying to ${ENV} server"
                 }
             }
         }
