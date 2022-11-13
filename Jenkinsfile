@@ -1,25 +1,26 @@
+/* groovylint-disable-next-line CompileStatic */
 pipeline {
-  
-    agent any 
-  
+    agent any
+    environment {
+    VERSION:'1.0.0'
+    }
     stages {
-      
-        stage("build") {
+        stage('build') {
             steps {
-              echo "building  the application..."   
+                echo 'building  the application...'
+                echo "building with version ${VERSION}"
             }
         }
-      
-      stage("test") {
+
+        stage('test') {
             steps {
-               echo "testing the application..."
+                echo 'testing the application...'
             }
         }
-      
-      stage("deploy") {
-        
+
+        stage('deploy') {
             steps {
-               echo "deploying the application..."
+                echo 'deploying the application...'
             }
         }
     }
