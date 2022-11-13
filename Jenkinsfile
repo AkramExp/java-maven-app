@@ -1,18 +1,23 @@
 /* groovylint-disable-next-line CompileStatic */
 pipeline {
     agent any
-    environment {
-        VERSION = '1.0.0'
+    parameters {
+        choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+        booleanParam(name: 'executeTest', value: true, description: '')
     }
     stages {
         stage('build') {
             steps {
                 echo 'building  the application...'
-                echo "building with version ${VERSION}"
             }
         }
 
         stage('test') {
+            when {
+                expression {
+                    executeTest
+                }
+              }
             steps {
                 echo 'testing the application...'
             }
@@ -21,6 +26,7 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'deploying the application...'
+                echo "deploying version ${VERSION}"
             }
         }
     }
