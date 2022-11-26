@@ -13,6 +13,30 @@ pipeline {
                 }
             }
         }
+        stage('jenkins-job run') {
+            when {
+                expression {
+                    BRANCH_NAME == 'jenkins-job'
+                }
+            }
+            steps {
+                script {
+                    echo "this is for jenkins job"
+                }
+            }
+        }
+        stage('main run') {
+            when {
+                expression {
+                    BRANCH_NAME == 'main'
+                }
+            }
+            steps {
+                script {
+                    echo "this is for main"
+                }
+            }
+        }
         stage('build jar') {
             steps {
                 script {
