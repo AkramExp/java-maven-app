@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         BRANCH_NAME = 'jenkins-job'
+    }
     stages {
         stage("build") {
             when {
