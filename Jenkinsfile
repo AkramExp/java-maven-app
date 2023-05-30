@@ -1,42 +1,27 @@
-def gv
-
-pipeline {
+ipeline {
     agent any
-    stages {
-        stage("init") {
-            steps {
-                script {
-                    gv = load "script.groovy"
-                }
-            }
-        }
+    tools {
+        maven 'maven'
+    }
         stage("build") {
             steps {
-                script {
-                    gv.buildApp()
-                }
+                echo "building the app"
+                sh 'mvn package'
             }
         }
-        stage("test") {
+        stage("build image") {
             steps {
-                script {
-                    gv.testApp()
+                echo "building the image"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'USER', passwordVariable: 'PWD')) {
+                    sh 'docker build -t akramexp/my-repo:jma-2.0'
+                    sh 'docker login -u $USER -p $PWD'
+                    sh 'docker push akramexp/my-repo:jma-2.0'
                 }
             }
         }
         stage("deploy") {
-            input {
-                message "Select the environment to deploy to"
-                ok "Done"
-                parameters {
-                    choice(name: 'ENV', choices: ['dev', 'staging', 'prod'], description: '')
-                }
-            }
             steps {
-                script {
-                    gv.deployApp()
-                    echo "Deploying to ${ENV}"
-                }
+                echo "deploying"
             }
         }
     }   
