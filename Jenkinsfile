@@ -35,7 +35,7 @@ pipeline {
         stage("deploy") {
             steps {
                 script {
-                    def dockerCmd = "docker run -p 3080:3080 -d akramexp/my-repo:jma-1.0"
+                    def dockerCmd = "docker run -p 8080:8080 -d akramexp/my-repo:jma-1.0"
                     sshagent(['ec2-user-key']) {
                         sh " ssh -o StrictHostKeyChecking=no ec2-user@15.207.85.245 ${dockerCmd} "
                     }
