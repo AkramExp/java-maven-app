@@ -38,6 +38,7 @@ pipeline {
                     def dockerCmd = "docker run -p 8080:8080 -d akramexp/my-repo:jma-1.0"
                     sshagent(['ec2-user-key']) {
                         sh " ssh -o StrickHostKeyChecking=no ec2-user@15.207.85.245 ${dockerCmd} "
+                    }
                 }
             }
         }
