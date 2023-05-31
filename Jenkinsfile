@@ -26,9 +26,9 @@ pipeline {
         stage("build and push image") {
             steps {
                 script {
-                    buildImage 'akramexp/my-repo:jma-3.0'
+                    buildImage 'akramexp/my-repo:jma-4.0'
                     dockerLogin()
-                    dockerPush 'akramexp/my-repo:jma-3.0'
+                    dockerPush 'akramexp/my-repo:jma-4.0'
                 }
             }
         }
