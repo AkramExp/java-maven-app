@@ -35,9 +35,10 @@ pipeline {
         stage("deploy") {
             steps {
                 script {
-                    def dockerCmd = "docker run -p 8080:8080 -d akramexp/my-repo:jma-1.0"
+                    def dockerCompose = "docker-compose -f docker-compose.yaml up --detach"
                     sshagent(['ec2-user-key']) {
-                        sh " ssh -o StrictHostKeyChecking=no ec2-user@15.207.85.245 ${dockerCmd} "
+                        sh "scp docker-compose.yaml ec2-user@15.207.85.245:/home/ec2-user"
+                        sh " ssh -o StrictHostKeyChecking=no ec2-user@15.207.85.245 ${dockerCompose} "
                     }
                 }
             }
